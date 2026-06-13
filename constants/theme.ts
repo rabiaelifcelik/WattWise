@@ -7,11 +7,17 @@ import { Platform } from 'react-native';
 
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
+// ─── Theme ────────────────────────────────────────────────────────────────────
+const TEAL = '#2a9d8f';
+const TEAL_DARK = '#1a7a6e';
+const RED = '#e03a2f';
+const GREEN = '#27ae60';
+const DASH_COLOR = '#cccccc';
 
 export const Colors = {
   light: {
     text: '#11181C',
-    background: '#fff',
+    background: '#f0f2f5',
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
@@ -25,6 +31,13 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
   },
+  main: {
+    primarycolor: TEAL_DARK,
+    secondarycolor: TEAL,
+    red: RED,
+    green: GREEN,
+    dashcolor: DASH_COLOR
+  }
 };
 
 export const Fonts = Platform.select({
