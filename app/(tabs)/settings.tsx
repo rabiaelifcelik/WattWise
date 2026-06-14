@@ -1,26 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { router } from 'expo-router';
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  StatusBar,
-  Switch,
   Alert,
-  Appearance
-} from 'react-native';
+  Appearance,
+  StatusBar,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Colors } from '@/constants/theme';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useUser } from '@/contexts/UserContext';
-
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Colors } from "@/constants/theme";
+import { useUser } from "@/contexts/UserContext";
 
 // Import Components
-import DeleteAccountModal from '@/components/ui/DeleteAccountModal';
-import AvatarIcon from '@/components/ui/AvatarIcon';
+import AvatarIcon from "@/components/ui/AvatarIcon";
+import DeleteAccountModal from "@/components/ui/DeleteAccountModal";
+
+import { useExpense } from "@/contexts/ExpenseContext";
+import {exportCSV} from "@/scripts/download-csv";
 
 // ─── Setting Row ──────────────────────────────────────────────────────────────
 function SettingRow({
@@ -44,38 +46,49 @@ function SettingRow({
   );
 }
 
-
 // ─── Main Screen ──────────────────────────────────────────────────────────────
-export default function SettingsScreen() {      
+export default function SettingsScreen() {
   const [darkMode, setDarkMode] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const {user} = useUser()
+  const { user } = useUser();
+
+  const { electricityExpenses, waterExpenses } = useExpense();
 
   const handleDeleteConfirm = () => {
     setDeleteModalVisible(false);
-    Alert.alert('Account Deleted', 'Your account has been deleted.');
-    router.push('../(auth)/signin')
+    Alert.alert("Account Deleted", "Your account has been deleted.");
+    router.push("../(auth)/signin");
   };
 
   const handleEditProfile = () => {
-    Alert.alert("Hey! Are you sure about editing?")
-    router.push('../(pages)/edit-user')
-  }
+    Alert.alert("Hey! Are you sure about editing?");
+    router.push("../(pages)/edit-user");
+  };
 
-  const toggleSwitch = () => setDarkMode(previousState => !previousState);
+  const toggleSwitch = () => setDarkMode((previousState) => !previousState);
 
   // add this
-  useEffect(()=>{
+  useEffect(() => {
     const colorScheme = Appearance.getColorScheme();
-      if (colorScheme === 'dark') {
-          setDarkMode(true); // true means dark
-      } else {
-          setDarkMode(false); // false means light
+    if (colorScheme === "dark") {
+      setDarkMode(true); // true means dark
+    } else {
+      setDarkMode(false); // false means light
+    }
+  }, []);
+
+  const handleExport = async () => {
+    try {
+        await exportCSV(
+          electricityExpenses,
+          waterExpenses
+        );
+    } catch (error) {
+        console.error("Failed to export CSV:", error);
       }
-  },[])
-
-
+  };
   
+
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" />
@@ -87,9 +100,16 @@ export default function SettingsScreen() {
         <View style={styles.profileSection}>
           <AvatarIcon />
           <Text style={styles.userName}>{user.name}</Text>
-          <TouchableOpacity style={styles.editProfileRow} onPress={handleEditProfile}>
+          <TouchableOpacity
+            style={styles.editProfileRow}
+            onPress={handleEditProfile}
+          >
             <Text style={styles.editProfileText}>Edit profile</Text>
-            <IconSymbol size={23} name="square.and.pencil" color={Colors.main.primarycolor} />
+            <IconSymbol
+              size={23}
+              name="square.and.pencil"
+              color={Colors.main.primarycolor}
+            />
           </TouchableOpacity>
         </View>
 
@@ -97,21 +117,27 @@ export default function SettingsScreen() {
         <View style={styles.settingsList}>
           <SettingRow
             label="Change password"
-            rightElement={<IconSymbol size={28} name="chevron.right" color='#ffffff' />}
-            onPress={() => router.push('../(pages)/change-password')}
+            rightElement={
+              <IconSymbol size={28} name="chevron.right" color="#ffffff" />
+            }
+            onPress={() => router.push("../(pages)/change-password")}
           />
           <SettingRow
             label="My coupons"
-            rightElement={<IconSymbol size={28} name="chevron.right" color='#ffffff' />}
-            onPress={() => router.push('../(pages)/my-coupons')}
+            rightElement={
+              <IconSymbol size={28} name="chevron.right" color="#ffffff" />
+            }
+            onPress={() => router.push("../(pages)/my-coupons")}
           />
           <SettingRow
             label="Dark mode"
             rightElement={
               <Switch
                 value={darkMode}
-                onValueChange={() => {(setDarkMode(!darkMode))}}
-                trackColor={{ false: 'rgba(255,255,255,0.3)', true: '#4caf50' }}
+                onValueChange={() => {
+                  setDarkMode(!darkMode);
+                }}
+                trackColor={{ false: "rgba(255,255,255,0.3)", true: "#4caf50" }}
                 thumbColor="#ffffff"
                 ios_backgroundColor="rgba(255,255,255,0.3)"
               />
@@ -119,13 +145,21 @@ export default function SettingsScreen() {
           />
           <SettingRow
             label="Download data"
-            rightElement= {<IconSymbol size={28} name="arrow.down.to.line" color='#ffffff' />}
-            onPress={() => {}}
+            rightElement={
+              <IconSymbol size={28} name="arrow.down.to.line" color="#ffffff" />
+            }
+            onPress={handleExport}
           />
           <SettingRow
             label="Log out"
-            rightElement={<IconSymbol size={28} name="rectangle.portrait.and.arrow.right" color='#ffffff' />}
-            onPress={() => router.push('../(auth)/signin')}
+            rightElement={
+              <IconSymbol
+                size={28}
+                name="rectangle.portrait.and.arrow.right"
+                color="#ffffff"
+              />
+            }
+            onPress={() => router.push("../(auth)/signin")}
           />
         </View>
 
@@ -161,32 +195,32 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontSize: 26,
-    fontWeight: '700',
-    color: '#111',
+    fontWeight: "700",
+    color: "#111",
     marginTop: 16,
     marginBottom: 20,
   },
 
   // Profile
   profileSection: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 28,
   },
   userName: {
     fontSize: 20,
-    fontWeight: '600',
-    color: '#111',
+    fontWeight: "600",
+    color: "#111",
     marginBottom: 4,
   },
   editProfileRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
   },
   editProfileText: {
     fontSize: 16,
     color: Colors.main.primarycolor,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 
   // Settings list
@@ -198,29 +232,27 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 14,
     paddingHorizontal: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   settingLabel: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: "500",
   },
-
 
   // Delete account
   deleteRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 8,
     marginTop: 20,
   },
   deleteText: {
     color: Colors.main.red,
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
   },
-
 });

@@ -6,6 +6,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { UserProvider } from '@/contexts/UserContext';
+import { ExpenseProvider } from '@/contexts/ExpenseContext';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -16,13 +17,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <UserProvider>
-        <Stack>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(pages)" options={{ headerShown: false }} />
-        </Stack>
-      </UserProvider>
+      <ExpenseProvider>
+        <UserProvider>
+          <Stack>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(pages)" options={{ headerShown: false }} />
+          </Stack>
+        </UserProvider>
+      </ExpenseProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
   );

@@ -14,6 +14,7 @@ import {
 
 import { Colors } from '@/constants/theme';
 import ChartCard from '@/components/ui/ChartCard';
+import { useExpense } from '@/contexts/ExpenseContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -26,17 +27,6 @@ const MAX_ELECTRICITY = 220;
 const MAX_WATER = 120;
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
-// Simulated electricity data indexed by month (0=Jan)
-const ELECTRICITY_DATA: Record<number, number> = {
-  0: 140, 1: 90, 2: 200, 3: 0, 4: 0, 5: 0,
-  6: 0, 7: 0, 8: 130, 9: 160, 10: 75, 11: 190,
-};
-
-// Simulated water data indexed by month (0=Jan)
-const WATER_DATA: Record<number, number> = {
-  0: 55, 1: 40, 2: 80, 3: 0, 4: 0, 5: 0,
-  6: 0, 7: 0, 8: 60, 9: 75, 10: 35, 11: 90,
-};
 
 const SUGGESTIONS = [
   'Close the tap while brushing teeth',
@@ -56,13 +46,15 @@ export default function DashboardScreen() {
   const chartFlatRef = useRef<FlatList>(null);
   const currentMonthIdx = new Date().getMonth();
 
+  const {electricityExpenses, waterExpenses} = useExpense()
+
   const charts = [
     <ChartCard 
       key='elem' 
       title='Electricty' 
       range={range}
       currentMonthIdx={currentMonthIdx}
-      data={ELECTRICITY_DATA}
+      data={electricityExpenses}
       target={TARGET_ELECTRICITY}
       max={MAX_ELECTRICITY}
     />,
@@ -72,7 +64,7 @@ export default function DashboardScreen() {
       title='Water' 
       range={range}
       currentMonthIdx={currentMonthIdx}
-      data={WATER_DATA}
+      data={waterExpenses}
       target={TARGET_WATER}
       max={MAX_WATER}
     />,
@@ -139,9 +131,11 @@ export default function DashboardScreen() {
             showsVerticalScrollIndicator={false}
           >
             {SUGGESTIONS.map((s, i) => (
-              <View key={i} style={styles.suggestionItem}>
-                <Text style={styles.suggestionText}>{s}</Text>
-              </View>
+              <TouchableOpacity>
+                <View key={i} style={styles.suggestionItem}>
+                  <Text style={styles.suggestionText}>{s}</Text>
+                </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>

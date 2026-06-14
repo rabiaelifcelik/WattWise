@@ -5,17 +5,18 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   StatusBar,
   FlatList,
   Alert,
   Modal,
 } from 'react-native';
 
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { Colors } from '@/constants/theme';
 import RewardCard from '@/components/ui/RewardCard';
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+// ─── Data ───────────-> Constant for mockup purposes
 const USER_POINTS = 5000;
 
 interface Reward {

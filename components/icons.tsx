@@ -2,6 +2,7 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
+import { IconSymbol } from './ui/icon-symbol';
 
 const TEAL = '#2a9d8f';
 const TEAL_DARK = '#1a7a6e';
@@ -26,17 +27,7 @@ export function CartIcon() {
   return (
     <View style={iconStyles.wrapper}>
       {/* Cart body */}
-      <View style={iconStyles.cartBody}>
-        {/* Cart front */}
-        <View style={iconStyles.cartFront} />
-      </View>
-      {/* Wheels */}
-      <View style={iconStyles.wheelsRow}>
-        <View style={iconStyles.wheel} />
-        <View style={iconStyles.wheel} />
-      </View>
-      {/* Handle bar */}
-      <View style={iconStyles.cartHandle} />
+      <IconSymbol size={60} name="basket.fill" color={TEAL_DARK}/>
     </View>
   );
 }

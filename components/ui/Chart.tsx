@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 
 import { Colors } from '@/constants/theme';
+import { Expense } from '@/contexts/ExpenseContext';
 
 // --- Constants
 const CHART_HEIGHT = 160;
@@ -57,13 +58,13 @@ function DashedVLine({ h, color = Colors.main.dashcolor }: { h: number; color?: 
 // ─── Chart component ──────────────────────────────────────────────────────────
 interface ChartProps {
   monthIndices: number[];
-  data: Record<number, number>;
+  data: Expense[];
   target: number;
   maxValue: number;
   currentMonthIdx: number;
   label: string;
   totalAmount: string;
-  month:String;
+  months:string[];
   accentColor?: string;
 }
 
@@ -75,7 +76,7 @@ export default function Chart({
   currentMonthIdx,
   label,
   totalAmount,
-  month,
+  months,
   accentColor = Colors.main.red,
 }: ChartProps) {
   const [selected, setSelected] = useState<{ index: number; x: number } | null>(null);
@@ -98,7 +99,7 @@ export default function Chart({
   const getBarHeight = (val: number) => (val / maxValue) * CHART_HEIGHT;
 
   const handlePress = (i: number) => {
-    const val = data[monthIndices[i]] ?? 0;
+    const val = data[monthIndices[i]].bill ?? 0;
     if (val === 0) { setSelected(null); return; }
     const cx = slotW * i + slotW / 2;
     setSelected(selected?.index === i ? null : { index: i, x: cx });
@@ -108,7 +109,7 @@ export default function Chart({
 
   }
 
-  const selVal = selected !== null ? (data[monthIndices[selected.index]] ?? 0) : 0;
+  const selVal = selected !== null ? (data[monthIndices[selected.index]].bill ?? 0) : 0;
   const diff = ((selVal - target) / target) * 100;
   const tooltipLabel = diff > 0
     ? `${Math.round(diff)}% over the target`
@@ -163,7 +164,7 @@ export default function Chart({
           {/* Bars */}
           <View style={[styles.absPos, styles.barsRow]}>
             {monthIndices.map((mIdx, i) => {
-              const val = data[mIdx] ?? 0;
+              const val = data[mIdx].bill ?? 0;
               const bh = getBarHeight(val);
               const isSelected = selected?.index === i;
               const isCurrent = isCurrentMonth(i);
@@ -211,7 +212,7 @@ export default function Chart({
         <View style={[styles.labelsRow, { width: chartW }]}>
           {monthIndices.map((mIdx) => (
             <View key={mIdx} style={styles.labelSlot}>
-              <Text style={styles.labelText}>{month}</Text>
+              <Text style={styles.labelText}>{months[mIdx]}</Text>
             </View>
           ))}
         </View>

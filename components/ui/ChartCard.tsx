@@ -10,10 +10,12 @@ import {
   FlatList,
   SafeAreaView,
   StatusBar,
+  Alert
 } from 'react-native';
 
 import Chart from '@/components/ui/Chart';
 import { Colors } from '@/constants/theme';
+import { Expense } from '@/contexts/ExpenseContext';
 
 type RangeKey = '3' | '6' | '12';
 
@@ -22,7 +24,7 @@ interface ChartCardProps {
   title:string;
   range: RangeKey;
   currentMonthIdx: number; 
-  data:Record<number, number>;
+  data:Expense[];
   target:number;
   max:number
 }
@@ -57,7 +59,7 @@ function getMonthRange(range: RangeKey): number[] {
 export default function ChartCard({ title, range, currentMonthIdx, data, target, max }: ChartCardProps) {
   const months = getMonthRange(range);
 
-  const selVal = data[currentMonthIdx]
+  const selVal = data[currentMonthIdx].bill
   const diff = ((selVal - target) / target) * 100;
   const tooltipLabel = diff > 0
         ? `${Math.round(diff)}% over the target`
@@ -66,7 +68,7 @@ export default function ChartCard({ title, range, currentMonthIdx, data, target,
   return (
     <View style={styles.chartCard}>
       <Text style={styles.chartCardTitle}>{title}</Text>
-      <Text style={[styles.chartCardAmount, { color: '#1a7a6e' }]}>{`\$${data[currentMonthIdx]}`}</Text>
+      <Text style={[styles.chartCardAmount, { color: '#1a7a6e' }]}>{`\$${data[currentMonthIdx].bill}`}</Text>
       <Text style={[styles.chartCardSub, { color: tooltipColor }]}>{tooltipLabel}</Text>
       <Chart
         monthIndices={months}
@@ -75,7 +77,7 @@ export default function ChartCard({ title, range, currentMonthIdx, data, target,
         maxValue={max}
         currentMonthIdx={currentMonthIdx}
         label={title}
-        month={ALL_MONTHS[currentMonthIdx]}
+        months={ALL_MONTHS}
         totalAmount={`\$${data[currentMonthIdx]}`}
         accentColor={Colors.main.red}
       />
