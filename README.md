@@ -13,6 +13,12 @@ This is a sample electricity and water expense tracker app.
       <img src="assets/images/SettingsScreen.jpeg" width="200" />
 </div>
 
+Properties:
+
+- Login/Signup forms
+- Interactive Dashboard and Gifts
+- Account management
+
 ## Get started
 
 1. Install dependencies
