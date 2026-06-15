@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "StickerSmash",
-    "slug": "StickerSmash",
+    "name": "WattWise",
+    "slug": "WattWise",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "stickersmash",
+    "icon": "./assets/images/WattWiseIcon.png",
+    "scheme": "wattwise",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
